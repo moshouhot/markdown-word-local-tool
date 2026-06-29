@@ -1,0 +1,4 @@
+.omx/
+_analysis/*.png
+.DS_Store
+Thumbs.db
