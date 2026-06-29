@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "页面标题正确",
+      "ok": true,
+      "detail": "Markdown → Word"
+    },
+    {
+      "name": "输入区存在",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "插入示例按钮存在",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "模式说明初始为模板模式",
+      "ok": true,
+      "detail": "模板模式：适合 Markdown 文本，按右侧模板参数生成 Word。"
+    },
+    {
+      "name": "高级标题设置默认折叠",
+      "ok": true,
+      "detail": "false"
+    },
+    {
+      "name": "底部操作区存在",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "无外部 HTTP 链接",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "无外部资源请求",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "插入示例填充文本",
+      "ok": true,
+      "detail": "# 项目周报\n\n这是一段正文，支持 **"
+    },
+    {
+      "name": "插入示例状态提示正确",
+      "ok": true,
+      "detail": "✅ 已插入示例内容，可直接转换测试"
+    },
+    {
+      "name": "净化模式说明切换",
+      "ok": true,
+      "detail": "净化模式：适合从网页复制的富文本，尽量保留标题、加粗、列表和表格。"
+    },
+    {
+      "name": "重排模式说明切换",
+      "ok": true,
+      "detail": "重排模式：适合上传已有 .docx 后重新识别层级并套用当前模板。"
+    },
+    {
+      "name": "重排模式隐藏 PDF 按钮",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "重排模式主按钮文案切换",
+      "ok": true,
+      "detail": "⚡ 按模板重排并下载 Word"
+    },
+    {
+      "name": "返回模板模式说明正确",
+      "ok": true,
+      "detail": "模板模式：适合 Markdown 文本，按右侧模板参数生成 Word。"
+    },
+    {
+      "name": "模板模式显示 PDF 按钮",
+      "ok": true,
+      "detail": "flex"
+    },
+    {
+      "name": "模板模式主按钮文案恢复",
+      "ok": true,
+      "detail": "⚡ 一键转换下载 Word"
+    },
+    {
+      "name": "清空后输入区为空",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "清空后显示撤销",
+      "ok": true,
+      "detail": "✅ 已清空内容。撤销"
+    },
+    {
+      "name": "撤销恢复示例文本",
+      "ok": true,
+      "detail": "# 项目周报\n\n这是一段正文，支持 **"
+    },
+    {
+      "name": "撤销状态提示正确",
+      "ok": true,
+      "detail": "✅ 已恢复清空前内容"
+    },
+    {
+      "name": "浏览器内 DOCX 构建成功",
+      "ok": true,
+      "detail": "{\"blocks\":8,\"size\":10361,\"signature\":\"PK\"}"
+    }
+  ],
+  "docx": {
+    "blocks": 8,
+    "size": 10361,
+    "signature": "PK"
+  },
+  "screenshotPath": "F:\\Nextcloud\\project\\Markdown转化为Word格式\\_analysis\\interaction-verified.png"
+}
