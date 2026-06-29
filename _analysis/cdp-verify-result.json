@@ -17,6 +17,16 @@
       "detail": ""
     },
     {
+      "name": "导出设置按钮存在",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "导入设置按钮存在",
+      "ok": true,
+      "detail": ""
+    },
+    {
       "name": "模式说明初始为模板模式",
       "ok": true,
       "detail": "模板模式：适合 Markdown 文本，按右侧模板参数生成 Word。"
@@ -110,6 +120,36 @@
       "name": "浏览器内 DOCX 构建成功",
       "ok": true,
       "detail": "{\"blocks\":8,\"size\":10361,\"signature\":\"PK\"}"
+    },
+    {
+      "name": "导入设置应用自定义模板",
+      "ok": true,
+      "detail": "{\"importedKeys\":[\"laoliuAI_saved\",\"laoliuAI_lastTpl\",\"laoliuAI_theme\",\"laoliuAI_rpWidth\",\"laoliuAI_noNotice\"],\"exportedSchema\":\"markdown-to-word-settings\",\"exportedKeys\":[\"laoliuAI_saved\",\"laoliuAI_lastTpl\",\"laoliuAI_theme\",\"laoliuAI_rpWidth\",\"laoliuAI_noNotice\"],\"theme\":\"paper\",\"selectedTpl\":\"c_import_verify\",\"customName\":\"导入验证模板\",\"panelWidth\":\"420px\",\"noticeHidden\":true}"
+    },
+    {
+      "name": "导入设置应用主题",
+      "ok": true,
+      "detail": "paper"
+    },
+    {
+      "name": "导入设置应用上次模板",
+      "ok": true,
+      "detail": "c_import_verify"
+    },
+    {
+      "name": "导入设置应用侧栏宽度",
+      "ok": true,
+      "detail": "420px"
+    },
+    {
+      "name": "导入设置应用提示偏好",
+      "ok": true,
+      "detail": "true"
+    },
+    {
+      "name": "导出设置包含 schema 和全部键",
+      "ok": true,
+      "detail": "[\"laoliuAI_saved\",\"laoliuAI_lastTpl\",\"laoliuAI_theme\",\"laoliuAI_rpWidth\",\"laoliuAI_noNotice\"]"
     }
   ],
   "docx": {

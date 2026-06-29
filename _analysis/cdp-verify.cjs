@@ -91,6 +91,8 @@ async function main() {
     title: document.title,
     hasInput: !!document.querySelector('#mdin'),
     hasExample: [...document.querySelectorAll('button')].some(b => b.textContent.includes('插入示例')),
+    hasSettingsExport: [...document.querySelectorAll('button')].some(b => b.textContent.includes('导出设置')),
+    hasSettingsImport: [...document.querySelectorAll('button')].some(b => b.textContent.includes('导入设置')),
     modeHelp: document.querySelector('#modeHelp')?.textContent || '',
     advancedOpen: document.querySelector('.advanced-settings')?.open,
     dockVisible: !!document.querySelector('.action-dock'),
@@ -100,6 +102,8 @@ async function main() {
   check('页面标题正确', initial.title === 'Markdown → Word', initial.title);
   check('输入区存在', initial.hasInput);
   check('插入示例按钮存在', initial.hasExample);
+  check('导出设置按钮存在', initial.hasSettingsExport);
+  check('导入设置按钮存在', initial.hasSettingsImport);
   check('模式说明初始为模板模式', initial.modeHelp.includes('模板模式'), initial.modeHelp);
   check('高级标题设置默认折叠', initial.advancedOpen === false, String(initial.advancedOpen));
   check('底部操作区存在', initial.dockVisible);
@@ -162,6 +166,52 @@ async function main() {
     return {blocks: blocks.length, size: buf.length, signature: String.fromCharCode(buf[0]) + String.fromCharCode(buf[1])};
   })()`);
   check('浏览器内 DOCX 构建成功', docx.signature === 'PK' && docx.size > 1000 && docx.blocks >= 3, JSON.stringify(docx));
+
+  const settingsResult = await evalValue(`(() => {
+    const payload = {
+      schema: 'markdown-to-word-settings',
+      version: 1,
+      settings: {
+        laoliuAI_saved: JSON.stringify({
+          c_import_verify: {
+            name: '导入验证模板',
+            body: {font: '宋体', size: 12, line: 1.5, indent: true},
+            h1: {font: '黑体', size: 16, bold: true},
+            h2: {font: '楷体', size: 15, bold: true},
+            h3: {font: '仿宋_GB2312', size: 14, bold: false}
+          }
+        }),
+        laoliuAI_lastTpl: 'c_import_verify',
+        laoliuAI_theme: 'paper',
+        laoliuAI_rpWidth: '420',
+        laoliuAI_noNotice: '1'
+      }
+    };
+    const imported = applySettingsPayload(payload);
+    const exported = collectSettingsPayload();
+    const custom = saved.c_import_verify;
+    const result = {
+      importedKeys: Object.keys(imported),
+      exportedSchema: exported.schema,
+      exportedKeys: Object.keys(exported.settings),
+      theme: document.documentElement.getAttribute('data-theme'),
+      selectedTpl: document.querySelector('input[name="tpl"]:checked')?.value,
+      customName: custom?.name,
+      panelWidth: document.querySelector('#rpanel').style.width,
+      noticeHidden: document.querySelector('#noticeBar')?.classList.contains('hidden')
+    };
+    setTheme('dark');
+    localStorage.setItem('laoliuAI_lastTpl','guowen');
+    document.querySelector('input[name="tpl"][value="guowen"]').checked = true;
+    restoreTpl();
+    return result;
+  })()`);
+  check('导入设置应用自定义模板', settingsResult.customName === '导入验证模板', JSON.stringify(settingsResult));
+  check('导入设置应用主题', settingsResult.theme === 'paper', settingsResult.theme);
+  check('导入设置应用上次模板', settingsResult.selectedTpl === 'c_import_verify', settingsResult.selectedTpl);
+  check('导入设置应用侧栏宽度', settingsResult.panelWidth === '420px', settingsResult.panelWidth);
+  check('导入设置应用提示偏好', settingsResult.noticeHidden === true, String(settingsResult.noticeHidden));
+  check('导出设置包含 schema 和全部键', settingsResult.exportedSchema === 'markdown-to-word-settings' && settingsResult.exportedKeys.length === 5, JSON.stringify(settingsResult.exportedKeys));
 
   const shot = await cdp.send('Page.captureScreenshot', {
     format: 'png',

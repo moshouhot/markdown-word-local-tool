@@ -158,6 +158,9 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
   border-radius:7px;font-size:11.5px;font-family:inherit;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:4px;transition:all .15s}
 .btn-stpl:hover{border-color:var(--accent);color:var(--accent);background:var(--adim)}
+.settings-tools{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.settings-tools .btn-stpl{margin-top:0}
+.settings-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:6px;text-align:center}
 
 .btn-cv{width:100%;padding:13px;background:var(--accent);color:#1A1A2E;border:none;
   border-radius:10px;font-size:14px;font-weight:800;font-family:inherit;
@@ -377,6 +380,12 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
           </div>
         </details>
         <button class="btn-stpl" onclick="openModal()">💾 将当前参数保存为自定义模板</button>
+        <div class="settings-tools">
+          <button class="btn-stpl" onclick="exportSettings()">⬇️ 导出设置</button>
+          <button class="btn-stpl" onclick="document.getElementById('settingsImport').click()">⬆️ 导入设置</button>
+        </div>
+        <input type="file" id="settingsImport" accept=".json,application/json" style="display:none" onchange="handleSettingsImport(event)">
+        <div class="settings-note">只备份模板、主题和偏好；不会保存正文内容或上传文件。</div>
       </div>
     </div>
     <!-- 净化模式面板 -->
@@ -1001,6 +1010,75 @@ function readParams(){ const s=id=>document.getElementById(id).value.trim(); con
 function fillParams(t){ const b=t.body; $v('b_font',b.font||''); $v('b_size',ptToName(b.size)); $v('b_line',b.line||''); document.getElementById('b_ind').checked=!!b.indent; $v('h1_font',t.h1?.font||''); $v('h1_size',ptToName(t.h1?.size)); $v('h2_font',t.h2?.font||''); $v('h2_size',ptToName(t.h2?.size)); $v('h3_font',t.h3?.font||''); $v('h3_size',ptToName(t.h3?.size)); document.getElementById('h1_bold').checked=t.h1?.bold!==false; document.getElementById('h2_bold').checked=t.h2?.bold!==false; document.getElementById('h3_bold').checked=t.h3?.bold!==false; }
 function $v(id,val){ document.getElementById(id).value=val; }
 
+// ── 设置导入/导出 ───────────────────────────
+const SETTINGS_SCHEMA='markdown-to-word-settings', SETTINGS_VERSION=1;
+const SETTINGS_KEYS=['laoliuAI_saved','laoliuAI_lastTpl','laoliuAI_theme','laoliuAI_rpWidth','laoliuAI_noNotice'];
+function collectSettingsPayload(){
+  const settings={}; SETTINGS_KEYS.forEach(k=>{ settings[k]=localStorage.getItem(k); });
+  return {schema:SETTINGS_SCHEMA,version:SETTINGS_VERSION,exportedAt:new Date().toISOString(),origin:location.origin,settings};
+}
+function normalizeImportedSettings(payload){
+  if(!payload||typeof payload!=='object') throw new Error('不是有效的设置文件');
+  if(payload.schema&&payload.schema!==SETTINGS_SCHEMA) throw new Error('设置文件类型不匹配');
+  const src=payload.settings&&typeof payload.settings==='object'?payload.settings:payload;
+  const out={};
+  for(const key of SETTINGS_KEYS){
+    if(!Object.prototype.hasOwnProperty.call(src,key)) continue;
+    const raw=src[key];
+    if(raw===null||raw===undefined||raw===''){ out[key]=null; continue; }
+    const val=String(raw);
+    if(key==='laoliuAI_saved'){
+      const parsed=JSON.parse(val);
+      if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)) throw new Error('自定义模板数据格式不正确');
+      out[key]=JSON.stringify(parsed);
+    }else if(key==='laoliuAI_theme'){
+      if(!['dark','light','paper'].includes(val)) throw new Error('主题设置不正确');
+      out[key]=val;
+    }else if(key==='laoliuAI_rpWidth'){
+      const w=parseInt(val,10);
+      if(!Number.isFinite(w)||w<220||w>560) throw new Error('侧栏宽度超出范围');
+      out[key]=String(w);
+    }else if(key==='laoliuAI_noNotice'){
+      if(val!=='1') throw new Error('提示关闭状态不正确');
+      out[key]=val;
+    }else{
+      if(val.length>128) throw new Error('模板选择记录过长');
+      out[key]=val;
+    }
+  }
+  if(!Object.keys(out).length) throw new Error('设置文件中没有可导入的项目');
+  return out;
+}
+function applySettingsPayload(payload){
+  const settings=normalizeImportedSettings(payload);
+  SETTINGS_KEYS.forEach(k=>{
+    if(!Object.prototype.hasOwnProperty.call(settings,k)) return;
+    settings[k]===null?localStorage.removeItem(k):localStorage.setItem(k,settings[k]);
+  });
+  loadSaved(); renderSaved(); restoreTheme(); restoreTpl(); noticeInit();
+  const rp=document.getElementById('rpanel'), savedW=parseInt(localStorage.getItem('laoliuAI_rpWidth'),10);
+  if(rp&&savedW&&savedW>=220&&savedW<=560) rp.style.width=savedW+'px';
+  return settings;
+}
+function exportSettings(){
+  try{
+    const blob=new Blob([JSON.stringify(collectSettingsPayload(),null,2)],{type:'application/json;charset=utf-8'});
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download=`markdown-word-settings_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),2000);
+    showSt('ok','✅ 设置已导出为 JSON 文件');
+  }catch(err){ console.error(err); showSt('err','❌ 导出失败：'+(err.message||'请查看控制台')); }
+}
+async function handleSettingsImport(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  try{
+    const payload=JSON.parse(await file.text());
+    const imported=applySettingsPayload(payload);
+    showSt('ok',`✅ 设置导入成功，已恢复 ${Object.keys(imported).length} 项偏好`);
+  }catch(err){ console.error(err); showSt('err','❌ 导入失败：'+(err.message||'请确认是本工具导出的 JSON 设置文件')); }
+  finally{ ev.target.value=''; }
+}
+
 // ══════════════ 上传 docx 识别参数（完整实现） ══════════════
 async function handleUpload(ev){
   const file = ev.target.files[0];
@@ -1099,7 +1177,7 @@ function setTheme(t){ document.documentElement.setAttribute('data-theme',t); doc
 function restoreTheme(){ setTheme(localStorage.getItem('laoliuAI_theme')||'dark'); }
 function refreshTplUI(){ document.querySelectorAll('#tplList .ti').forEach(el=>{ const r=el.querySelector('input[type=radio]'); el.classList.toggle('on',r?.checked); }); }
 function restoreTpl(){ const last=localStorage.getItem('laoliuAI_lastTpl')||'guowen'; const r=document.querySelector(`input[name="tpl"][value="${last}"]`); if(r){ r.checked=true; refreshTplUI(); } const t=BUILT[last]||saved[last]; if(t) fillParams(t); }
-function noticeInit(){ const bar=document.getElementById('noticeBar'); if(!bar) return; if(localStorage.getItem('laoliuAI_noNotice')==='1') bar.classList.add('hidden'); }
+function noticeInit(){ const bar=document.getElementById('noticeBar'); if(!bar) return; bar.classList.toggle('hidden',localStorage.getItem('laoliuAI_noNotice')==='1'); }
 function noticeClose(forever){ const bar=document.getElementById('noticeBar'); if(!bar) return; if(forever) localStorage.setItem('laoliuAI_noNotice','1'); bar.style.maxHeight='0'; bar.style.opacity='0'; bar.style.margin='0'; bar.style.overflow='hidden'; setTimeout(()=>bar.classList.add('hidden'),320); }
 
 function init(){
