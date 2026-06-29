@@ -39,13 +39,19 @@ header{display:flex;align-items:center;gap:10px;padding:11px 20px;
   background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#000))}
 .h-title{font-size:15px;font-weight:700;letter-spacing:.02em}
 .h-title span{color:var(--accent)}
-.h-badge{font-size:11px;color:var(--muted);background:var(--adim);
-  border:1px solid var(--bd);border-radius:20px;padding:2px 9px;white-space:nowrap}
 .theme-sw{margin-left:auto;display:flex;gap:3px}
 .t-btn{padding:3px 10px;font-size:11px;font-family:inherit;
   background:transparent;border:1px solid var(--bd);color:var(--muted);
   border-radius:20px;cursor:pointer;transition:all .15s}
 .t-btn.on,.t-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--adim)}
+
+.input-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.mini-btn{cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  background:transparent;color:var(--muted);border:1px solid var(--bd);font-size:12px;font-weight:700;
+  padding:5px 12px;border-radius:7px;transition:all .15s;user-select:none;font-family:inherit}
+.mini-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--adim)}
+.mini-btn.primary{background:var(--accent);border-color:var(--accent);color:#1A1A2E}
+.mini-btn.primary:hover{filter:brightness(1.12);color:#1A1A2E}
 
 main{flex:1;display:flex;flex-direction:row;
   padding:14px 18px;max-width:1440px;margin:0 auto;width:100%;gap:0;overflow:hidden}
@@ -65,11 +71,15 @@ textarea#mdin:focus{border-color:color-mix(in srgb,var(--accent) 55%,transparent
 textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans-serif;font-size:12.5px}
 
 .rp{display:flex;flex-direction:column;gap:10px;
-  overflow-y:auto;max-height:calc(100vh - 118px);
+  overflow:hidden;max-height:calc(100vh - 118px);
   width:344px;min-width:220px;max-width:560px;flex-shrink:0;padding-left:7px}
+.rp-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto;min-height:0;padding-right:2px}
 
 .mode-sw{display:grid;grid-template-columns:1fr 1fr 1fr;
   background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:3px;gap:3px}
+.mode-help{background:var(--adim);border:1px solid var(--bd);border-radius:8px;
+  color:var(--muted);font-size:11.5px;line-height:1.65;padding:8px 11px;margin-top:-3px}
+.mode-help b{color:var(--text)}
 .m-btn{padding:8px;text-align:center;font-size:12.5px;font-family:inherit;
   font-weight:600;border:none;cursor:pointer;border-radius:7px;
   background:transparent;color:var(--muted);transition:all .2s}
@@ -156,10 +166,20 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
 .btn-cv:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 20px var(--aglow)}
 .btn-cv:active{transform:none;box-shadow:none}
 .btn-cv:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;filter:none}
+.btn-cv.secondary{background:var(--surface)!important;color:var(--accent)!important;border:1px solid var(--accent)!important;
+  margin-top:7px;font-size:13px;padding:10px}
+.action-dock{flex-shrink:0;padding-top:10px;background:var(--bg);border-top:1px solid var(--bd)}
+.action-row{display:flex;gap:7px}
+.btn-clear{padding:0 14px;background:transparent;border:1px solid var(--bd);color:var(--muted);
+  border-radius:10px;font-size:18px;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit}
+.btn-clear:hover{border-color:var(--err);color:var(--err);background:rgba(240,128,128,.08)}
 
 .st{padding:8px 11px;border-radius:7px;font-size:11.5px;line-height:1.5;display:none}
 .st.ok{display:block;background:rgba(79,200,154,.1);border:1px solid rgba(79,200,154,.3);color:var(--ok)}
 .st.err{display:block;background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);color:var(--err)}
+.st button{margin-left:8px;background:transparent;border:1px solid currentColor;border-radius:5px;
+  color:inherit;font-size:11px;padding:2px 8px;cursor:pointer;font-family:inherit}
+.st button:hover{background:rgba(255,255,255,.08)}
 
 .ci{background:var(--adim);border:1px solid var(--bd);border-radius:8px;
   padding:11px 13px;font-size:11.5px;color:var(--muted);line-height:1.8}
@@ -167,6 +187,15 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
 .ci .ci-row{display:flex;align-items:baseline;gap:6px;margin-top:4px}
 .ci-tag{background:var(--surface);border-radius:4px;padding:1px 5px;
   font-family:'Consolas',monospace;font-size:10.5px;color:var(--text)}
+
+.advanced-settings{border:1px solid var(--bd);border-radius:8px;background:var(--card);
+  margin-top:8px;margin-bottom:10px;overflow:hidden}
+.advanced-settings summary{cursor:pointer;list-style:none;padding:9px 11px;
+  color:var(--accent);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.advanced-settings summary::-webkit-details-marker{display:none}
+.advanced-settings summary::after{content:'展开';font-size:10px;color:var(--muted);font-weight:500}
+.advanced-settings[open] summary::after{content:'收起'}
+.advanced-body{padding:0 11px 10px}
 
 .cmb{position:relative}
 .cmb input{padding-right:28px!important}
@@ -265,11 +294,13 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
 @media (max-width:700px){
   main{flex-direction:column!important;padding:10px!important;gap:8px!important;overflow:visible!important}
   .lp{padding-right:0!important}
-  .rp{width:100%!important;max-width:100%!important;max-height:none!important;padding-left:0!important}
+  .rp{width:100%!important;max-width:100%!important;max-height:none!important;padding-left:0!important;overflow:visible!important}
+  .rp-body{overflow:visible!important}
   .divider{display:none}
   textarea#mdin{min-height:200px!important}
   .theme-sw{display:none}
-  .h-badge{display:none}
+  .input-actions{justify-content:stretch}
+  .mini-btn{flex:1}
 }
 </style>
 <!-- 本地克隆：已移除远程百度统计脚本，核心 Markdown/Word 转换功能为纯前端离线运行。 -->
@@ -288,13 +319,13 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
   <div class="lp">
     <div class="p-label" style="display:flex;align-items:center;justify-content:space-between">
       <span>粘贴内容</span>
-      <label id="uploadLabel" style="cursor:pointer;display:flex;align-items:center;gap:6px;
-        background:var(--accent);color:#1A1A2E;font-size:12.5px;font-weight:700;
-        padding:5px 13px;border-radius:7px;transition:all .15s;user-select:none"
-        onmouseover="this.style.filter='brightness(1.12)'" onmouseout="this.style.filter=''">
-        <input type="file" id="mdFileInput" accept=".md,.txt,.docx" style="display:none" onchange="handleMdFile(event)">
-        📎 上传文件（.md / .txt / .docx）
-      </label>
+      <div class="input-actions">
+        <button type="button" class="mini-btn" onclick="insertExample()">🧪 插入示例</button>
+        <label id="uploadLabel" class="mini-btn primary">
+          <input type="file" id="mdFileInput" accept=".md,.txt,.docx" style="display:none" onchange="handleMdFile(event)">
+          📎 上传文件（.md / .txt / .docx）
+        </label>
+      </div>
     </div>
     <div class="notice-bar" id="noticeBar"><span class="notice-icon">💡</span><div class="notice-text"><b>关于文章总标题</b>：若 AI 回复首行是带 <b>#</b> 号的总标题，建议手动删除或去掉 # 号。</div><div class="notice-btns"><button class="notice-close" onclick="noticeClose(false)">×</button><button class="notice-never" onclick="noticeClose(true)">不再提示</button></div></div>
     <div id="dropzone" style="position:relative;flex:1;display:flex;flex-direction:column">
@@ -317,6 +348,8 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
       <button class="m-btn" id="mb-clean" onclick="setMode('clean')">✨ 净化</button>
       <button class="m-btn" id="mb-reflow" onclick="setMode('reflow')">🔄 重排</button>
     </div>
+    <div class="mode-help" id="modeHelp"><b>模板模式</b>：适合 Markdown 文本，按右侧模板参数生成 Word。</div>
+    <div class="rp-body">
     <!-- 模板模式面板 -->
     <div id="sec-tpl">
       <div class="card"><div class="ct">选择格式模板</div><div class="tl" id="tplList">
@@ -333,11 +366,16 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
         <div class="f"><label>字号</label><div class="cmb"><input type="text" id="b_size" placeholder="三号 / 11pt" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('b_size')">▾</button><div class="cmb-drop" id="b_size_drop"></div></div></div>
         <div class="f"><label>行距</label><input type="number" id="b_line" placeholder="28" step=".05" min=".5"></div>
         <div class="f full"><div class="trow"><label>正文首行缩进 2 字符</label><label class="tog"><input type="checkbox" id="b_ind" checked><span class="tog-s"></span></label></div></div></div>
-        <div class="pg-title">标题（各级独立，留空跟随正文字体）</div><table class="ht"><thead><tr><th></th><th>字体</th><th style="width:82px">字号</th><th style="width:40px;text-align:center">加粗</th></tr></thead><tbody>
-        <tr><td class="hl">H1</td><td><div class="cmb"><input type="text" id="h1_font" placeholder="黑体" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h1_font')">▾</button><div class="cmb-drop" id="h1_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h1_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h1_size')">▾</button><div class="cmb-drop" id="h1_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h1_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
-        <tr><td class="hl">H2</td><td><div class="cmb"><input type="text" id="h2_font" placeholder="楷体" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h2_font')">▾</button><div class="cmb-drop" id="h2_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h2_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h2_size')">▾</button><div class="cmb-drop" id="h2_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h2_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
-        <tr><td class="hl">H3</td><td><div class="cmb"><input type="text" id="h3_font" placeholder="仿宋_GB2312" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h3_font')">▾</button><div class="cmb-drop" id="h3_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h3_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h3_size')">▾</button><div class="cmb-drop" id="h3_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h3_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
-        </tbody></table>
+        <details class="advanced-settings">
+          <summary>高级标题设置</summary>
+          <div class="advanced-body">
+            <div class="pg-title">标题（各级独立，留空跟随正文字体）</div><table class="ht"><thead><tr><th></th><th>字体</th><th style="width:82px">字号</th><th style="width:40px;text-align:center">加粗</th></tr></thead><tbody>
+            <tr><td class="hl">H1</td><td><div class="cmb"><input type="text" id="h1_font" placeholder="黑体" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h1_font')">▾</button><div class="cmb-drop" id="h1_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h1_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h1_size')">▾</button><div class="cmb-drop" id="h1_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h1_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
+            <tr><td class="hl">H2</td><td><div class="cmb"><input type="text" id="h2_font" placeholder="楷体" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h2_font')">▾</button><div class="cmb-drop" id="h2_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h2_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h2_size')">▾</button><div class="cmb-drop" id="h2_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h2_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
+            <tr><td class="hl">H3</td><td><div class="cmb"><input type="text" id="h3_font" placeholder="仿宋_GB2312" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h3_font')">▾</button><div class="cmb-drop" id="h3_font_drop"></div></div></td><td><div class="cmb"><input type="text" id="h3_size" placeholder="同正文" autocomplete="off"><button type="button" class="cmb-btn" onclick="cmbToggle('h3_size')">▾</button><div class="cmb-drop" id="h3_size_drop"></div></div></td><td style="text-align:center"><input type="checkbox" id="h3_bold" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td></tr>
+            </tbody></table>
+          </div>
+        </details>
         <button class="btn-stpl" onclick="openModal()">💾 将当前参数保存为自定义模板</button>
       </div>
     </div>
@@ -359,18 +397,21 @@ textarea#mdin::placeholder{color:var(--muted);font-family:'Microsoft YaHei',sans
       </div>
       <div class="reflow-file-info" id="reflowFileInfo"><div class="rf-name" id="rfName">—</div><div class="rf-stat" id="rfStat">—</div></div>
     </div>
-    <div style="display:flex;gap:7px">
-      <button class="btn-cv" id="cvBtn" onclick="doConvert()" style="flex:1">⚡ 一键转换下载 Word</button>
-      <button onclick="clearInput()" style="padding:0 14px;background:transparent;border:1px solid var(--bd);color:var(--muted);border-radius:10px;font-size:18px;cursor:pointer;transition:all .15s;flex-shrink:0" onmouseover="this.style.borderColor='var(--err)';this.style.color='var(--err)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--muted)'">🗑️</button>
-    </div>
-    <button class="btn-cv" id="pdfBtn" onclick="doPdf()" style="background:var(--surface);color:var(--accent);border:1px solid var(--accent);margin-top:-4px;font-size:13px;padding:10px">🖨️ 转换预览并导出 PDF</button>
-    <div class="st" id="stBar"></div>
     <div class="tips"><div class="tips-t">📌 格式说明</div><ul>
       <li><code># ## ###</code> 转 Word 一/二/三级标题，自动升级对齐</li>
       <li>模板模式清除所有符号，净化模式保留加粗/斜体</li>
       <li><code>| 表格 |</code> 转为真实 Word 表格，首行加粗</li>
       <li>PDF：在新窗口预览后用浏览器打印→另存为PDF</li>
       <li>🔒 内容在本地处理，不上传任何服务器</li></ul>
+    </div>
+    </div>
+    <div class="action-dock">
+      <div class="action-row">
+        <button class="btn-cv" id="cvBtn" onclick="doConvert()" style="flex:1">⚡ 一键转换下载 Word</button>
+        <button class="btn-clear" onclick="clearInput()" title="清空内容，可撤销">🗑️</button>
+      </div>
+      <button class="btn-cv secondary" id="pdfBtn" onclick="doPdf()">🖨️ 转换预览并导出 PDF</button>
+      <div class="st" id="stBar"></div>
     </div>
   </div>
 </main>
@@ -831,16 +872,73 @@ function setMode(m){
   document.getElementById('sec-tpl').style.display=m==='tpl'?'':'none';
   document.getElementById('sec-clean').style.display=m==='clean'?'':'none';
   document.getElementById('sec-reflow').style.display=m==='reflow'?'':'none';
+  const help={
+    tpl:'<b>模板模式</b>：适合 Markdown 文本，按右侧模板参数生成 Word。',
+    clean:'<b>净化模式</b>：适合从网页复制的富文本，尽量保留标题、加粗、列表和表格。',
+    reflow:'<b>重排模式</b>：适合上传已有 .docx 后重新识别层级并套用当前模板。'
+  };
+  document.getElementById('modeHelp').innerHTML=help[m]||help.tpl;
   const cvBtn=document.getElementById('cvBtn'),pdfBtn=document.getElementById('pdfBtn');
   if(m==='reflow'){ cvBtn.innerHTML='⚡ 按模板重排并下载 Word'; pdfBtn.style.display='none'; }
   else{ cvBtn.innerHTML='⚡ 一键转换下载 Word'; pdfBtn.style.display=''; }
   if(m!=='clean'){ cleanBlocks=null; closePreviewOverlay(); }
 }
 
+const EXAMPLE_MD=`# 项目周报
+
+这是一段正文，支持 **加粗**、*斜体*、~~删除线~~ 和 \`行内代码\`。
+
+## 本周进展
+
+- 完成 Markdown 内容整理
+- 统一 Word 输出格式
+
+| 项目 | 状态 | 备注 |
+|---|---|---|
+| 模板转换 | 完成 | 可直接下载 docx |
+| 表格识别 | 正常 | 首行自动加粗 |
+
+### 下周计划
+
+继续完善文档排版细节。`;
+let lastClearedState=null, clearUndoTimer=null;
+function cloneState(v){ try{return structuredClone(v);}catch(_){ return v==null?v:JSON.parse(JSON.stringify(v)); } }
+function insertExample(){
+  const input=document.getElementById('mdin');
+  if(input.value.trim()&&!confirm('当前输入区已有内容，是否用示例覆盖？')) return;
+  input.value=EXAMPLE_MD; cleanBlocks=null; window._reflowBlocks=null; closePreviewOverlay();
+  document.getElementById('reflowFileInfo').style.display='none';
+  if(curMode==='reflow') setMode('tpl');
+  input.focus(); showSt('ok','✅ 已插入示例内容，可直接转换测试');
+}
+
 // ── 清除 ───────────────────────────────────
 function clearInput(){
-  document.getElementById('mdin').value=''; cleanBlocks=null; window._reflowBlocks=null;
-  closePreviewOverlay(); document.getElementById('reflowFileInfo').style.display='none'; clearSt();
+  const input=document.getElementById('mdin'), info=document.getElementById('reflowFileInfo');
+  if(!input.value&&!cleanBlocks&&!window._reflowBlocks){ showSt('err','⚠️ 当前没有可清空的内容'); return; }
+  lastClearedState={
+    value:input.value,
+    cleanBlocks:cloneState(cleanBlocks),
+    reflowBlocks:cloneState(window._reflowBlocks),
+    reflowDisplay:info.style.display,
+    rfName:document.getElementById('rfName').textContent,
+    rfStat:document.getElementById('rfStat').textContent
+  };
+  input.value=''; cleanBlocks=null; window._reflowBlocks=null;
+  closePreviewOverlay(); info.style.display='none';
+  if(clearUndoTimer) clearTimeout(clearUndoTimer);
+  showStHtml('ok','✅ 已清空内容。<button type="button" onclick="undoClear()">撤销</button>');
+  clearUndoTimer=setTimeout(()=>{ lastClearedState=null; clearUndoTimer=null; const st=document.getElementById('stBar'); if(st.textContent.includes('已清空内容')) clearSt(); },10000);
+}
+function undoClear(){
+  if(!lastClearedState){ showSt('err','⚠️ 没有可撤销的清空操作'); return; }
+  document.getElementById('mdin').value=lastClearedState.value||'';
+  cleanBlocks=cloneState(lastClearedState.cleanBlocks); window._reflowBlocks=cloneState(lastClearedState.reflowBlocks);
+  const info=document.getElementById('reflowFileInfo'); info.style.display=lastClearedState.reflowDisplay||'none';
+  document.getElementById('rfName').textContent=lastClearedState.rfName||'—';
+  document.getElementById('rfStat').textContent=lastClearedState.rfStat||'—';
+  lastClearedState=null; if(clearUndoTimer) clearTimeout(clearUndoTimer); clearUndoTimer=null;
+  showSt('ok','✅ 已恢复清空前内容'); document.getElementById('mdin').focus();
 }
 
 // ── 主转换 ─────────────────────────────────
@@ -995,6 +1093,7 @@ async function handleUpload(ev){
 
 // ── 状态条 / 主题 / 初始化 ──────────────────
 function showSt(type,msg){ const el=document.getElementById('stBar'); el.className='st '+type; el.textContent=msg; }
+function showStHtml(type,html){ const el=document.getElementById('stBar'); el.className='st '+type; el.innerHTML=html; }
 function clearSt(){ const el=document.getElementById('stBar'); el.className='st'; el.textContent=''; }
 function setTheme(t){ document.documentElement.setAttribute('data-theme',t); document.querySelectorAll('.t-btn').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); localStorage.setItem('laoliuAI_theme',t); }
 function restoreTheme(){ setTheme(localStorage.getItem('laoliuAI_theme')||'dark'); }
