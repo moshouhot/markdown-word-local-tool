@@ -1,4 +1,8 @@
 .omx/
 _analysis/*.png
+windows-shell/bin/
+windows-shell/obj/
+windows-shell/*.user
+dist/
 .DS_Store
 Thumbs.db

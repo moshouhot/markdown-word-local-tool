@@ -56,6 +56,8 @@ class CDP {
 async function main() {
   const pages = await waitJson(`${cdpBase}/json/list`);
   const pageInfo =
+    pages.find((p) => p.type === 'page' && p.url.includes('https://app.local/index.html')) ||
+    pages.find((p) => p.type === 'page' && p.title.includes('Markdown')) ||
     pages.find((p) => p.type === 'page' && p.url.includes('127.0.0.1')) ||
     pages.find((p) => p.type === 'page');
   if (!pageInfo) throw new Error('no CDP page found');
@@ -81,11 +83,24 @@ async function main() {
     return res.result.value;
   }
 
+  async function waitForExpression(expression, timeoutMs = 15000) {
+    const deadline = Date.now() + timeoutMs;
+    let lastValue;
+    while (Date.now() < deadline) {
+      lastValue = await evalValue(expression);
+      if (lastValue) return;
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    throw new Error(`timeout waiting for expression: ${expression}; last=${lastValue}`);
+  }
+
   const checks = [];
   function check(name, ok, detail = '') {
     checks.push({ name, ok: !!ok, detail });
     if (!ok) throw new Error(`check failed: ${name} ${detail}`);
   }
+
+  await waitForExpression(`document.title === 'Markdown → Word' && !!document.querySelector('#mdin')`);
 
   const initial = await evalValue(`(() => ({
     title: document.title,
@@ -168,6 +183,16 @@ async function main() {
   check('浏览器内 DOCX 构建成功', docx.signature === 'PK' && docx.size > 1000 && docx.blocks >= 3, JSON.stringify(docx));
 
   const settingsResult = await evalValue(`(() => {
+    const keys = SETTINGS_KEYS;
+    const before = {};
+    keys.forEach(k => before[k] = localStorage.getItem(k));
+    const restoreBefore = () => {
+      keys.forEach(k => before[k] === null ? localStorage.removeItem(k) : localStorage.setItem(k, before[k]));
+      loadSaved(); renderSaved(); restoreTheme(); restoreTpl(); noticeInit();
+      const rp = document.querySelector('#rpanel');
+      const savedW = parseInt(localStorage.getItem('laoliuAI_rpWidth'), 10);
+      rp.style.width = savedW && savedW >= 220 && savedW <= 560 ? savedW + 'px' : '';
+    };
     const payload = {
       schema: 'markdown-to-word-settings',
       version: 1,
@@ -187,24 +212,23 @@ async function main() {
         laoliuAI_noNotice: '1'
       }
     };
-    const imported = applySettingsPayload(payload);
-    const exported = collectSettingsPayload();
-    const custom = saved.c_import_verify;
-    const result = {
-      importedKeys: Object.keys(imported),
-      exportedSchema: exported.schema,
-      exportedKeys: Object.keys(exported.settings),
-      theme: document.documentElement.getAttribute('data-theme'),
-      selectedTpl: document.querySelector('input[name="tpl"]:checked')?.value,
-      customName: custom?.name,
-      panelWidth: document.querySelector('#rpanel').style.width,
-      noticeHidden: document.querySelector('#noticeBar')?.classList.contains('hidden')
-    };
-    setTheme('dark');
-    localStorage.setItem('laoliuAI_lastTpl','guowen');
-    document.querySelector('input[name="tpl"][value="guowen"]').checked = true;
-    restoreTpl();
-    return result;
+    try {
+      const imported = applySettingsPayload(payload);
+      const exported = collectSettingsPayload();
+      const custom = saved.c_import_verify;
+      return {
+        importedKeys: Object.keys(imported),
+        exportedSchema: exported.schema,
+        exportedKeys: Object.keys(exported.settings),
+        theme: document.documentElement.getAttribute('data-theme'),
+        selectedTpl: document.querySelector('input[name="tpl"]:checked')?.value,
+        customName: custom?.name,
+        panelWidth: document.querySelector('#rpanel').style.width,
+        noticeHidden: document.querySelector('#noticeBar')?.classList.contains('hidden')
+      };
+    } finally {
+      restoreBefore();
+    }
   })()`);
   check('导入设置应用自定义模板', settingsResult.customName === '导入验证模板', JSON.stringify(settingsResult));
   check('导入设置应用主题', settingsResult.theme === 'paper', settingsResult.theme);

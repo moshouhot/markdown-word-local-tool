@@ -1,9 +1,9 @@
 const fs = require('fs');
-const html = fs.readFileSync('index.html', 'utf8');
-const start = html.indexOf('// ══════════════ MiniZip');
-const end = html.indexOf('// ══════════════ 核心变量');
+const app = fs.readFileSync('assets/app.js', 'utf8');
+const start = app.indexOf('// ══════════════ MiniZip');
+const end = app.indexOf('// ══════════════ 核心变量');
 if (start < 0 || end < 0) throw new Error('script slice markers not found');
-const code = html.slice(start, end) + `
+const code = app.slice(start, end) + `
 (async () => {
   const blocks = parseMarkdown('# 标题\\n\\n正文内容\\n\\n|列1|列2|\\n|-|-|\\n|A|B|');
   const blob = buildTplDocx(blocks, {
